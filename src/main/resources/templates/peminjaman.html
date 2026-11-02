@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Peminjaman Buku</title>
+</head>
+<body>
+<h1>Peminjaman Buku</h1>
+
+<p th:if="${pesan}" th:text="${pesan}" style="color:green"></p>
+<p th:if="${error}" th:text="${error}" style="color:red"></p>
+
+<h2>Pinjam Buku</h2>
+<form th:action="@{/peminjaman}" method="post">
+    <select name="idAnggota" required>
+        <option value="">-- Pilih anggota --</option>
+        <option th:each="a : ${daftarAnggota}" th:value="${a.idAnggota}"
+                th:text="${a.idAnggota + ' - ' + a.nama + ' (batas ' + a.batasPinjam + ')'}">A001</option>
+    </select>
+    <select name="idBuku" required>
+        <option value="">-- Pilih buku --</option>
+        <option th:each="b : ${daftarBuku}" th:value="${b.idBuku}"
+                th:text="${b.idBuku + ' - ' + b.judul + ' (stok ' + b.stok + ')'}">B001</option>
+    </select>
+    <button type="submit">Pinjam</button>
+</form>
+
+<h2>Riwayat Peminjaman</h2>
+<p th:if="${#lists.isEmpty(daftarPeminjaman)}">Belum ada peminjaman.</p>
+
+<table border="1" th:unless="${#lists.isEmpty(daftarPeminjaman)}">
+    <tr>
+        <th>No</th><th>Anggota</th><th>Buku</th>
+        <th>Tgl Pinjam</th><th>Tgl Kembali</th><th>Status</th><th>Aksi</th>
+    </tr>
+    <tr th:each="p : ${daftarPeminjaman}">
+        <td th:text="${p.idPeminjaman}">1</td>
+        <td th:text="${p.anggota.nama}">Nama</td>
+        <td th:text="${p.buku.judul}">Judul</td>
+        <td th:text="${p.tanggalPinjam}">2026-11-02</td>
+        <td th:text="${p.tanggalKembali} ?: '-'">-</td>
+        <td th:text="${p.sedangDipinjam()} ? 'Dipinjam' : 'Dikembalikan'">Dipinjam</td>
+        <td>
+            <form th:if="${p.sedangDipinjam()}"
+                  th:action="@{/peminjaman/{id}/kembali(id=${p.idPeminjaman})}" method="post">
+                <button type="submit">Kembalikan</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<p>
+    <a th:href="@{/buku}">← Ke Daftar Buku</a> |
+    <a th:href="@{/anggota}">Lihat Anggota</a>
+</p>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Anggota</title>
+</head>
+<body>
+<h1>Daftar Anggota</h1>
+
+<p th:if="${#lists.isEmpty(daftarAnggota)}">Belum ada anggota.</p>
+
+<table border="1" th:unless="${#lists.isEmpty(daftarAnggota)}">
+    <tr><th>ID</th><th>Nama</th><th>Batas Pinjam</th></tr>
+    <tr th:each="a : ${daftarAnggota}">
+        <td th:text="${a.idAnggota}">A001</td>
+        <td th:text="${a.nama}">Nama</td>
+        <td th:text="${a.batasPinjam}">0</td>
+    </tr>
+</table>
+
+<h2>Tambah Anggota</h2>
+<p th:if="${error}" th:text="${error}" style="color:red"></p>
+<form th:action="@{/anggota}" method="post">
+    <input type="text" name="idAnggota" placeholder="ID" maxlength="10" required>
+    <input type="text" name="nama" placeholder="Nama" maxlength="100" required>
+    <input type="number" name="batasPinjam" value="1" min="1" required>
+    <button type="submit">Simpan</button>
+</form>
+
+<p>
+    <a th:href="@{/buku}">← Ke Daftar Buku</a> |
+    <a th:href="@{/peminjaman}">Peminjaman Buku</a>
+</p>
+</body>
+</html>
